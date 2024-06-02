@@ -86,7 +86,7 @@ def animate(Xs):
         plt.ylim(-2, 2)
         plt.gca().set_aspect("equal")
 
-        plt.pause(0.01)
+        plt.pause(0.02)
         if i + 1 < len(Xs):
             bar1.remove()
             bar2.remove()
