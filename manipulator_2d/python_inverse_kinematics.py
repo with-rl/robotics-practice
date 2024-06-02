@@ -39,17 +39,17 @@ def animate(Xs):
         (bar2,) = plt.plot(
             [X[0][0], X[1][0]], [X[0][1], X[1][1]], linewidth=5, color="b"
         )
-        if i > 0:
-            plt.plot(Xs[i - 1 : i + 1, 1][:, 0], Xs[i - 1 : i + 1, 1][:, 1], "k.")
+        (shape,) = plt.plot(Xs[0:i, 1, 0], Xs[0:i, 1, 1], "k.")
 
         plt.xlim(-2, 2)
         plt.ylim(-2, 2)
         plt.gca().set_aspect("equal")
 
-        plt.pause(0.01)
+        plt.pause(0.02)
         if i + 1 < len(Xs):
             bar1.remove()
             bar2.remove()
+            shape.remove()
 
     plt.pause(5)
 
