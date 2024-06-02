@@ -6,6 +6,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 #     http://www.apache.org/licenses/LICENSE-2.0
 
+import time
 import numpy as np
 import mujoco as mj
 from mujoco.glfw import glfw
@@ -66,15 +67,12 @@ class MuJoCoBase:
         self.cam.lookat = np.array([0.0, 0.0, 0.0])
 
     # MuJoCo 시뮬레이션 실행
-    def run_mujoco(self, simend, ft=0.1):
+    def run_mujoco(self, steps, ft=0.02):
         while not glfw.window_should_close(self.window):
             time_prev = self.data.time
             while self.data.time - time_prev < ft:
                 mj.mj_step(self.model, self.data)
             self.trace_cb(mj, self.model, self.data)
-
-            if 0 < simend and simend <= self.data.time:
-                break
 
             # get framebuffer viewport
             viewport_width, viewport_height = glfw.get_framebuffer_size(self.window)
@@ -112,6 +110,11 @@ class MuJoCoBase:
             # process pending GUI events, call GLFW callbacks
             glfw.poll_events()
 
+            steps -= 1
+            if steps <= 0:
+                break
+        # need for update (GUI pending)
+        time.sleep(5)
         glfw.terminate()
 
     # 프레임 별 MuJoCo 제어 정보 입력 (각 프레임 내에서 한번만 호출 됨)
