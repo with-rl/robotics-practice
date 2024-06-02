@@ -54,4 +54,4 @@ class MuJoCoManipulator2D(MuJoCoBase):
 if __name__ == "__main__":
     simulator = MuJoCoManipulator2D("manipulator_2d.xml", "Manipulator 2D")
     simulator.init_mujoco()
-    simulator.run_mujoco(100)
+    simulator.run_mujoco(len(simulator.qs))
