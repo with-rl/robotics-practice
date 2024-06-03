@@ -25,6 +25,7 @@ def simulate(simulator, q, X_refs):
         dX = np.array([X_ref[0] - E_0[0], X_ref[1] - E_0[1]])
 
         dq = J_2inv.dot(dX)
+        dq = np.clip(dq, -5, 5)
         q[0] += dq[0]
         q[1] += dq[1]
 

@@ -63,6 +63,7 @@ class MuJoCoManipulator2D(MuJoCoBase):
             ]
         )
         dq = J_2inv.dot(dX)
+        dq = np.clip(dq, -5, 5)
 
         data.qpos[0] += dq[0]
         data.qpos[1] += dq[1]
