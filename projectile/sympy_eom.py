@@ -18,7 +18,8 @@ def main():
     #
     # Lagrangian
     #
-    T = m * (x_d**2 + y_d**2) / 2
+    v = sy.sqrt(x_d**2 + y_d**2)
+    T = m * v**2 / 2
     V = m * g * y
     L = T - V
     print("*" * 20, "Lagrangian", "*" * 20)
@@ -30,7 +31,6 @@ def main():
     #
     # Euler lagrange
     #
-    v = sy.sqrt(x_d**2 + y_d**2)
     Fx = -c * x_d * v
     Fy = -c * y_d * v
 
