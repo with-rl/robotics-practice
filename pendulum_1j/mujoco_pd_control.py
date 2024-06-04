@@ -36,9 +36,8 @@ class MuJoCoPendulum1J(MuJoCoBase):
         data.qpos[0] = 0
 
     def controller_cb(self, model, data):
-        data.ctrl[0] = (
-            -self.Kp * (data.qpos[0] - self.theta1_ref) - self.Kd * data.qvel[0]
-        )
+        theta1, theta1_d = data.qpos[0], data.qvel[0]
+        data.ctrl[0] = -self.Kp * (theta1 - self.theta1_ref) - self.Kd * theta1_d
 
     def trace_cb(self, mj, model, data):
         print(data.qpos[0])

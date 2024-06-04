@@ -31,7 +31,7 @@ class PythonPendulum1J:
         G = self.c * self.g * self.m * np.cos(theta1)
 
         A = np.array([[M]])
-        tau = (theta1_ref - theta1) * Kp - Kd * theta1_d  # pd-control
+        tau = -Kp * (theta1 - theta1_ref) - Kd * theta1_d  # pd-control
         b = -np.array([[C + G - tau]])
 
         x = np.linalg.solve(A, b)
