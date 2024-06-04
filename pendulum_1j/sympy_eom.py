@@ -99,6 +99,78 @@ def main():
         print(f"G[{i}]: {G[i]}")
     print()
 
+    #
+    # Trajectory
+    #
+    t = sy.symbols("t", real=True)
+    a10, a11, a12, a13 = sy.symbols("a10 a11 a12 a13", real=True)
+    a20, a21, a22, a23 = sy.symbols("a20 a21 a22 a23", real=True)
+    a30, a31, a32, a33 = sy.symbols("a30 a31 a32 a33", real=True)
+
+    pi = sy.pi
+
+    f1 = a10 + a11 * t + a12 * t**2 + a13 * t**3
+    f2 = a20 + a21 * t + a22 * t**2 + a23 * t**3
+    f3 = a30 + a31 * t + a32 * t**2 + a33 * t**3
+    f1_d, f2_d, f3_d = sy.diff(f1, t), sy.diff(f2, t), sy.diff(f3, t)
+    f1_dd, f2_dd, f3_dd = sy.diff(f1_d, t), sy.diff(f2_d, t), sy.diff(f3_d, t)
+
+    t1, t2, t3, t4 = 0.0, 2.0, 4.0, 6.0
+    theta1, theta2, theta3, theta4 = -pi / 2, 0, pi / 2, 0
+
+    equ = sy.Matrix(
+        [
+            f1.subs(t, t1) - theta1,
+            f1.subs(t, t2) - theta2,
+            f2.subs(t, t2) - theta2,
+            f2.subs(t, t3) - theta3,
+            f3.subs(t, t3) - theta3,
+            f3.subs(t, t4) - theta4,
+            f1_d.subs(t, t1) - 0,
+            f2_d.subs(t, t2) - f1_d.subs(t, t2),
+            f3_d.subs(t, t3) - f2_d.subs(t, t3),
+            f3_d.subs(t, t4) - 0,
+            f2_dd.subs(t, t2) - f1_dd.subs(t, t2),
+            f3_dd.subs(t, t3) - f2_dd.subs(t, t3),
+        ]
+    )
+    q = [a10, a11, a12, a13, a20, a21, a22, a23, a30, a31, a32, a33]
+
+    A = equ.jacobian(q)
+    b = -equ.subs(
+        [
+            (a10, 0),
+            (a11, 0),
+            (a12, 0),
+            (a13, 0),
+            (a20, 0),
+            (a21, 0),
+            (a22, 0),
+            (a23, 0),
+            (a30, 0),
+            (a31, 0),
+            (a32, 0),
+            (a33, 0),
+        ]
+    )
+    x = A.inv() * b
+    print("*" * 20, "Traj optimization", "*" * 20)
+    print(f"A = {A}")
+    print(f"b = {b}")
+    print(f"a10 = {x[0]}")
+    print(f"a11 = {x[1]}")
+    print(f"a12 = {x[2]}")
+    print(f"a13 = {x[3]}")
+    print(f"a20 = {x[4]}")
+    print(f"a21 = {x[5]}")
+    print(f"a22 = {x[6]}")
+    print(f"a23 = {x[7]}")
+    print(f"a30 = {x[8]}")
+    print(f"a31 = {x[9]}")
+    print(f"a32 = {x[10]}")
+    print(f"a33 = {x[11]}")
+    print()
+
 
 if __name__ == "__main__":
     main()
