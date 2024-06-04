@@ -8,11 +8,15 @@
 
 import sys
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
-from python_forward_kinematics import PythonManipulator2D
+from python_forward_kinematics import PythonManipulator2D, create_trajectory
 
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
+
+matplotlib.use("Qt5Agg")
 
 
 class MuJoCoManipulator2D(MuJoCoBase):
@@ -20,12 +24,10 @@ class MuJoCoManipulator2D(MuJoCoBase):
         super().__init__(xml_fn, title)
 
         self.pysim = PythonManipulator2D()
+        self.Xs = []
 
         # Trajectory by angle
-        self.qs = np.stack(
-            [np.linspace(0, 0.5 * np.pi, 500), np.linspace(0, 1.5 * np.pi, 500)],  #
-            axis=1,
-        )
+        self.qs = create_trajectory()
         self.index = 0
 
     def init_cam(self):
@@ -42,13 +44,33 @@ class MuJoCoManipulator2D(MuJoCoBase):
         data.qpos[1] = self.qs[self.index, 1]
 
     def trace_cb(self, mj, model, data):
-        self.index += 1
+        self.Xs.append(data.site_xpos[0][:2].copy())
         # Python을 이용해서 직접 계산
         theta1 = data.qpos[0]
         theta2 = data.qpos[1]
         _, E_0 = self.pysim.forward_kinematics(theta1, theta2)
         # 두 값 출력
         print(data.site_xpos[0][:2], "==", E_0)
+        self.index += 1
+
+    def report_cp(self):
+        qs = np.array(self.qs)
+        Xs = np.array(self.Xs)
+
+        plt.figure(1)
+
+        plt.subplot(2, 1, 1)
+        plt.plot(qs[:, 0], "r", label="theta_1")
+        plt.plot(qs[:, 1], "b", label="theta_2")
+        plt.legend()
+
+        plt.subplot(2, 1, 2)
+        plt.plot(Xs[:, 0], "r", label="x_e")
+        plt.plot(Xs[:, 1], "b", label="y_e")
+        plt.legend()
+
+        plt.plot()
+        plt.show()
 
 
 if __name__ == "__main__":

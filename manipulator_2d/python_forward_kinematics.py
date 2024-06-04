@@ -75,7 +75,7 @@ def simulate(simulator, qs):
     return Xs
 
 
-def animate(Xs):
+def animate(Xs, qs):
     for i, X in enumerate(Xs):
         (bar1,) = plt.plot([0, X[0][0]], [0, X[0][1]], linewidth=5, color="r")
         (bar2,) = plt.plot(
@@ -92,17 +92,38 @@ def animate(Xs):
             bar2.remove()
 
     plt.pause(5)
+    plt.close()
+
+    # figure control signal
+    plt.figure(1)
+
+    plt.subplot(2, 1, 1)
+    plt.plot(qs[:, 0], "r", label="theta_1")
+    plt.plot(qs[:, 1], "b", label="theta_2")
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    plt.plot(Xs[:, 1, 0], "r", label="x_e")
+    plt.plot(Xs[:, 1, 1], "b", label="y_e")
+    plt.legend()
+
+    plt.show()
+
+
+def create_trajectory():
+    qs = np.stack(
+        [np.linspace(0, 0.5 * np.pi, 500), np.linspace(0, 1.5 * np.pi, 500)],  #
+        axis=1,
+    )
+    return qs
 
 
 if __name__ == "__main__":
     simulator = PythonManipulator2D()
 
     # Trajectory by angle
-    qs = np.stack(
-        [np.linspace(0, 0.5 * np.pi, 500), np.linspace(0, 1.5 * np.pi, 500)],  #
-        axis=1,
-    )
+    qs = create_trajectory()
     # Trajectory by position
     Xs = simulate(simulator, qs)
     # animation
-    animate(Xs)
+    animate(Xs, qs)

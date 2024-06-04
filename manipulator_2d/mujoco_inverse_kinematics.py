@@ -8,13 +8,17 @@
 
 import sys
 import numpy as np
-
 import mujoco as mj
+import matplotlib
+import matplotlib.pyplot as plt
 
 from python_forward_kinematics import PythonManipulator2D
+from python_inverse_kinematics import create_trajectory
 
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
+
+matplotlib.use("Qt5Agg")
 
 
 class MuJoCoManipulator2D(MuJoCoBase):
@@ -22,17 +26,11 @@ class MuJoCoManipulator2D(MuJoCoBase):
         super().__init__(xml_fn, title)
 
         self.pysim = PythonManipulator2D()
-
-        self.q = np.array([np.pi / 2, np.pi / 2])
-        r = 0.5
+        self.Xs = []
+        self.qs = []
 
         # Trajectory by position
-        _, E0 = self.pysim.forward_kinematics(self.q[0], self.q[0])
-        phi = np.linspace(0, 2 * np.pi, 500)
-        self.X_refs = np.stack(
-            [E0[0] + r * np.cos(phi), E0[1] + r * np.sin(phi)], axis=-1
-        )
-
+        self.q, self.X_refs = create_trajectory(self.pysim)
         self.index = 0
 
     def init_cam(self):
@@ -69,10 +67,37 @@ class MuJoCoManipulator2D(MuJoCoBase):
         data.qpos[1] += dq[1]
 
     def trace_cb(self, mj, model, data):
+        self.qs.append(data.qpos[:2].copy())
+        self.Xs.append(data.site_xpos[0][:2].copy())
         # 두 값 비교
         print(data.site_xpos[0][:2], "==", self.X_refs[self.index])
         # index 증가
         self.index += 1
+
+    def report_cp(self):
+        qs = np.array(self.qs)
+        Xs = np.array(self.Xs)
+        X_refs = np.array(self.X_refs)
+
+        plt.figure(1)
+
+        plt.subplot(3, 1, 1)
+        plt.plot(qs[:, 0], "r", label="theta_1")
+        plt.plot(qs[:, 1], "b", label="theta_2")
+        plt.legend()
+
+        plt.subplot(3, 1, 2)
+        plt.plot(Xs[:, 0], "r", label="x")
+        plt.plot(X_refs[:, 0], "b", label="x_ref")
+        plt.legend()
+
+        plt.subplot(3, 1, 3)
+        plt.plot(Xs[:, 1], "r", label="y")
+        plt.plot(X_refs[:, 1], "b", label="y_ref")
+        plt.legend()
+
+        plt.plot()
+        plt.show()
 
 
 if __name__ == "__main__":
