@@ -38,10 +38,8 @@ class PythonPendulum1J:
         return [theta1_d, x[0][0]]
 
 
-def simulate(simulator, theta1, N):
+def simulate(simulator, z0, N):
     ts = np.arange(N) * simulator.h
-    theta1_d = 0
-    z0 = np.array([theta1, theta1_d])
     zs = odeint(simulator.pendulum_no_control, z0, ts, args=())
     return zs
 
@@ -66,8 +64,8 @@ if __name__ == "__main__":
     simulator = PythonPendulum1J()
 
     # Trajectory by angle
-    theta1 = np.pi / 2 - 0.5
+    z0 = [np.pi / 2 - 0.5, 0]
     # Trajectory by position
-    zs = simulate(simulator, theta1, 500)
+    zs = simulate(simulator, z0, 500)
     # animation
     animate(zs)

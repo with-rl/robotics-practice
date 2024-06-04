@@ -23,9 +23,10 @@ class PythonPendulum1J:
         self.l = 1
         self.g = 9.81
 
-    def pendulum_fl_set_point(self, z0, t, theta1_ref, Kp):
+    def pendulum_fl_set_point(self, z0, t, z_ref, Kp):
         Kd = 2 * np.sqrt(Kp)
         theta1, theta1_d = z0
+        theta1_ref, _ = z_ref
 
         # huristic M, C, G
         M_hat = 2.5
@@ -45,11 +46,9 @@ class PythonPendulum1J:
         return [theta1_d, x[0][0]]
 
 
-def simulate(simulator, theta1, theta1_ref, Kp, N):
+def simulate(simulator, z0, z_ref, Kp, N):
     ts = np.arange(N) * simulator.h
-    theta1_d = 0
-    z0 = np.array([theta1, theta1_d])
-    zs = odeint(simulator.pendulum_fl_set_point, z0, ts, args=(theta1_ref, Kp))
+    zs = odeint(simulator.pendulum_fl_set_point, z0, ts, args=(z_ref, Kp))
     return zs
 
 
@@ -73,10 +72,10 @@ if __name__ == "__main__":
     simulator = PythonPendulum1J()
 
     # Trajectory by angle
-    theta1 = -np.pi / 2
-    theta1_ref = np.pi / 2
+    z0 = [-np.pi / 2, 0]
+    z_ref = [np.pi / 2, 0]
     Kp = 25
     # Trajectory by position
-    zs = simulate(simulator, theta1, theta1_ref, Kp, 500)
+    zs = simulate(simulator, z0, z_ref, Kp, 500)
     # animation
     animate(zs)

@@ -21,7 +21,7 @@ class MuJoCoPendulum1J(MuJoCoBase):
 
         self.pysim = PythonPendulum1J()
 
-        self.theta1_ref = np.pi
+        self.z_ref = [np.pi, 0]
         self.Kp = 25
         self.Kd = 10
 
@@ -37,7 +37,9 @@ class MuJoCoPendulum1J(MuJoCoBase):
 
     def controller_cb(self, model, data):
         theta1, theta1_d = data.qpos[0], data.qvel[0]
-        tau = -self.Kp * (theta1 - self.theta1_ref) - self.Kd * theta1_d
+        theta1_ref, _ = self.z_ref
+
+        tau = -self.Kp * (theta1 - theta1_ref) - self.Kd * theta1_d
         tau = np.clip(tau, -10, 10)
         data.ctrl[0] = tau
 

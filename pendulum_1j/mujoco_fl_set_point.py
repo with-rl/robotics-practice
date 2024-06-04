@@ -21,7 +21,7 @@ class MuJoCoPendulum1J(MuJoCoBase):
 
         self.pysim = PythonPendulum1J()
 
-        self.theta1_ref = np.pi
+        self.z_ref = [np.pi, 0]
         self.Kp = 25
         self.Kd = 2 * np.sqrt(self.Kp)
 
@@ -37,13 +37,14 @@ class MuJoCoPendulum1J(MuJoCoBase):
 
     def controller_cb(self, model, data):
         theta1, theta1_d = data.qpos[0], data.qvel[0]
+        theta1_ref, _ = self.z_ref
         # huristic M, C, G
         M_hat = 2.5
         C_hat = 0.1
         G_hat = 0.5
 
         tau = (
-            M_hat * (-self.Kp * (theta1 - self.theta1_ref) - self.Kd * theta1_d)
+            M_hat * (-self.Kp * (theta1 - theta1_ref) - self.Kd * theta1_d)
             + C_hat * (theta1_d)
             + G_hat * (theta1)
         )
