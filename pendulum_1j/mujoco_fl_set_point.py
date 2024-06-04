@@ -9,7 +9,7 @@
 import sys
 import numpy as np
 
-from python_pd_set_point import PythonPendulum1J
+from python_fl_set_point import PythonPendulum1J
 
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
@@ -21,7 +21,8 @@ class MuJoCoPendulum1J(MuJoCoBase):
 
         self.pysim = PythonPendulum1J()
 
-        self.z_ref = [np.pi, 0]
+        self.z0 = [-np.pi / 2, 0]
+        self.z_ref = [np.pi / 2, 0]
         self.Kp = 25
         self.Kd = 2 * np.sqrt(self.Kp)
 
@@ -29,11 +30,11 @@ class MuJoCoPendulum1J(MuJoCoBase):
         # initialize camera
         self.cam.azimuth = -90
         self.cam.elevation = -10
-        self.cam.distance = 15
+        self.cam.distance = 7.5
         self.cam.lookat = np.array([0.0, 0.0, 0.0])
 
     def init_controller(self, model, data):
-        data.qpos[0] = 0
+        data.qpos[0] = self.z0[0]
 
     def controller_cb(self, model, data):
         theta1, theta1_d = data.qpos[0], data.qvel[0]

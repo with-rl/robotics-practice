@@ -3,12 +3,12 @@
         <flag contact="enable" />
     </option >
     <worldbody>
-        <light diffuse="0 0 0" pos="0 0 10" dir="0 0 -1"/>
-        <geom type="plane" size="5 5 0.01" rgba="1 1 1 1"/>
-        <body pos="0 0 2" euler="0 0 0">
-            <joint name="joint0" type="hinge" axis = "0 1 0" pos = "0 0 1"/>
-            <geom type="cylinder" size="0.05 1" mass = "1" rgba="1 1 1 1"/>
-            <geom type="sphere" pos = "0 0 -1" mass = "0" size="0.1" rgba="1 0 0 1"/>
+        <light diffuse="0 0 0" pos="0 0 10" dir="0 0 -1" />
+        <geom type="plane" size="2 2 0.01" rgba="1 1 1 1" />
+        <body pos="-0.5 0 1.5" euler="0 90 0">
+            <joint name="joint0" type="hinge" axis = "0 1 0" pos = "0 0 0.5" />
+            <geom type="cylinder" size="0.025 0.5" euler="0 0 0" mass = "1" rgba="1 1 1 1" />
+            <geom type="sphere" pos = "0 0 -0.5" mass = "0" size="0.05" rgba="1 0 0 1" />
         </body>
     </worldbody>
     <actuator>

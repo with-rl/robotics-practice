@@ -20,16 +20,17 @@ class MuJoCoPendulum1J(MuJoCoBase):
         super().__init__(xml_fn, title)
 
         self.pysim = PythonPendulum1J()
+        self.z0 = [np.pi / 2 - 0.5, 0]
 
     def init_cam(self):
         # initialize camera
         self.cam.azimuth = -90
         self.cam.elevation = -10
-        self.cam.distance = 15
+        self.cam.distance = 7.5
         self.cam.lookat = np.array([0.0, 0.0, 0.0])
 
     def init_controller(self, model, data):
-        data.qpos[0] = np.pi - 0.5
+        data.qpos[0] = self.z0[0]
 
     def trace_cb(self, mj, model, data):
         print(data.qpos[0])

@@ -21,7 +21,8 @@ class MuJoCoPendulum1J(MuJoCoBase):
 
         self.pysim = PythonPendulum1J()
 
-        self.z_ref = [np.pi, 0]
+        self.z0 = [-np.pi / 2, 0]
+        self.z_ref = [np.pi / 2, 0]
         self.Kp = 25
         self.Kd = 10
 
@@ -33,7 +34,7 @@ class MuJoCoPendulum1J(MuJoCoBase):
         self.cam.lookat = np.array([0.0, 0.0, 0.0])
 
     def init_controller(self, model, data):
-        data.qpos[0] = 0
+        data.qpos[0] = self.z0[0]
 
     def controller_cb(self, model, data):
         theta1, theta1_d = data.qpos[0], data.qvel[0]
