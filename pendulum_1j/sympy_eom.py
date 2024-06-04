@@ -75,7 +75,7 @@ def main():
         dt_dL_dq_d.append(temp)
         dL_dq.append(sy.diff(L, q[i]))
         EOM.append(dt_dL_dq_d[i] - dL_dq[i])
-    EOM = sy.Matrix(EOM)
+    EOM = sy.simplify(sy.Matrix(EOM))
 
     print("*" * 20, "Euler lagrange", "*" * 20)
     for i in range(len(EOM)):

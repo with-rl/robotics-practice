@@ -9,7 +9,7 @@
 import sys
 import numpy as np
 
-from python_pd_control import PythonPendulum1J
+from python_pd_set_point import PythonPendulum1J
 
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
@@ -37,7 +37,9 @@ class MuJoCoPendulum1J(MuJoCoBase):
 
     def controller_cb(self, model, data):
         theta1, theta1_d = data.qpos[0], data.qvel[0]
-        data.ctrl[0] = -self.Kp * (theta1 - self.theta1_ref) - self.Kd * theta1_d
+        tau = -self.Kp * (theta1 - self.theta1_ref) - self.Kd * theta1_d
+        tau = np.clip(tau, -10, 10)
+        data.ctrl[0] = tau
 
     def trace_cb(self, mj, model, data):
         print(data.qpos[0])
