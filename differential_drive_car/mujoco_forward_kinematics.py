@@ -8,11 +8,15 @@
 
 import sys
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
-from python_forward_kinematics import PythonDDCar
+from python_forward_kinematics import PythonDDCar, create_trajectory
 
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
+
+matplotlib.use("Qt5Agg")
 
 
 class MuJoCoDDCar(MuJoCoBase):
@@ -20,18 +24,10 @@ class MuJoCoDDCar(MuJoCoBase):
         super().__init__(xml_fn, title)
 
         self.pysim = PythonDDCar()
+        self.ctrls = []
 
         # Trajectory by velocity and angular velocity
-        self.us = np.zeros((300, 2))
-        for i in range(0, 100):
-            self.us[i, 0] = 2.0
-            self.us[i, 1] = 0
-        for i in range(100, 200):
-            self.us[i, 0] = 2.0
-            self.us[i, 1] = np.pi / 2
-        for i in range(200, 300):
-            self.us[i, 0] = 2.0
-            self.us[i, 1] = 0
+        self.us = create_trajectory()
         self.index = 0
 
     def init_cam(self):
@@ -46,14 +42,28 @@ class MuJoCoDDCar(MuJoCoBase):
             self.index = self.index % len(self.us)
 
         ctrl = self.pysim.to_control(self.us[self.index][0], self.us[self.index][1])
-        ctrl = np.clip(ctrl, -5, 5)
+        ctrl = np.clip(ctrl, -15, 15)
         data.ctrl[0] = ctrl[1]
         data.ctrl[1] = ctrl[0]
 
     def trace_cb(self, mj, model, data):
+        self.ctrls.append(data.ctrl.copy())
         # 두 값 출력
         print(self.us[self.index], "==", data.ctrl)
         self.index += 1
+
+    def report_cp(self):
+        ctrls = np.array(self.ctrls)
+
+        plt.figure(1)
+
+        plt.subplot(1, 1, 1)
+        plt.plot(ctrls[:, 0], "r", label="left")
+        plt.plot(ctrls[:, 1], "b", label="right")
+        plt.legend()
+
+        plt.plot()
+        plt.show()
 
 
 if __name__ == "__main__":

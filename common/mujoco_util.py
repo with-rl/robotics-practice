@@ -113,9 +113,12 @@ class MuJoCoBase:
             steps -= 1
             if steps <= 0:
                 break
-        # need for update (GUI pending)
+
         time.sleep(5)
         glfw.terminate()
+
+        # 결과 출력
+        self.report_cp()
 
     # 프레임 별 MuJoCo 제어 정보 입력 (각 프레임 내에서 한번만 호출 됨)
     def trace_cb(self, mj, model, data):
@@ -197,6 +200,10 @@ class MuJoCoBase:
         mj.mjv_moveCamera(
             self.model, action, 0.0, -0.05 * yoffset, self.scene, self.cam
         )
+
+    # 수행결과 출력
+    def report_cp(self):
+        pass
 
     # 화면에 정보 출력
     def create_overlay(self, model, data):

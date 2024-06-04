@@ -30,7 +30,7 @@ def simulate(simulator, X_refs):
     return us, Xs
 
 
-def animate(Xs):
+def animate(Xs, X_refs, us):
     R = 0.75
     for i, X in enumerate(Xs):
         x, y, theta = X
@@ -53,18 +53,44 @@ def animate(Xs):
             shape.remove()
 
     plt.pause(5)
+    plt.close()
+
+    # figure control signal
+    plt.figure(1)
+
+    plt.subplot(3, 1, 1)
+    plt.plot(Xs[:, 0], "r", label="x")
+    plt.plot(X_refs[:, 0], "b", label="x_ref")
+    plt.legend()
+
+    plt.subplot(3, 1, 2)
+    plt.plot(Xs[:, 1], "r", label="y")
+    plt.plot(X_refs[:, 1], "b", label="y_ref")
+    plt.legend()
+
+    plt.subplot(3, 1, 3)
+    plt.plot(us[:, 0], "r", label="vel")
+    plt.plot(us[:, 1], "b", label="omega")
+    plt.legend()
+
+    plt.show()
+
+
+def create_trajectory():
+    r = 4.0
+    phi = np.linspace(0, 2 * np.pi, 1001) - np.pi / 2
+    X_refs = np.stack([r * np.cos(phi), r * np.sin(phi) + r], axis=-1)
+    return X_refs
 
 
 if __name__ == "__main__":
     simulator = PythonDDCar()
 
     # Trajectory by position
-    r = 5.0
-    phi = np.linspace(0, 2 * np.pi, 1000) - np.pi / 2
-    X_refs = np.stack([r * np.cos(phi), r * np.sin(phi) + r], axis=-1)
+    X_refs = create_trajectory()
 
     # Trajectory by velocity and angular velocity
     us, Xs = simulate(simulator, X_refs)
 
     # animation
-    animate(Xs)
+    animate(Xs, X_refs, us)

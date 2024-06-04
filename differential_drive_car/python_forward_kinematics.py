@@ -24,10 +24,10 @@ class PythonDDCar:
         self.py = 0.0
 
     # forward kinematics 계산
-    def euler_integration(self, v, omega, X0):
+    def euler_integration(self, vel, omega, X0):
         x0, y0, theta0 = X0
-        xdot_c = v * np.cos(theta0)
-        ydot_c = v * np.sin(theta0)
+        xdot_c = vel * np.cos(theta0)
+        ydot_c = vel * np.sin(theta0)
 
         x1 = x0 + xdot_c * self.h
         y1 = y0 + ydot_c * self.h
@@ -39,8 +39,10 @@ class PythonDDCar:
         A = np.array(
             [[self.r / 2, self.r / 2], [self.r / (2 * self.b), -self.r / (2 * self.b)]]
         )
-        A_inv = np.linalg.inv(A)
-        return A_inv @ np.array([vel, omega])
+        b = np.array([vel, omega])
+        x = np.linalg.solve(A, b)
+        print(b, x)
+        return x
 
     def inverse_kinematics(self, X_ref, X0):
         x0, y0, theta0 = X0
@@ -78,7 +80,7 @@ def simulate(simulator, us):
     return Xs
 
 
-def animate(Xs):
+def animate(Xs, us):
     R = 0.75
     for i, X in enumerate(Xs):
         x, y, theta = X
@@ -101,23 +103,39 @@ def animate(Xs):
             shape.remove()
 
     plt.pause(5)
+    plt.close()
+
+    # figure control signal
+    plt.figure(1)
+
+    plt.subplot(1, 1, 1)
+    plt.plot(us[:, 0], "r", label="vel")
+    plt.plot(us[:, 1], "b", label="omega")
+    plt.legend()
+
+    plt.show()
+
+
+def create_trajectory():
+    us = np.zeros((600, 2))
+    for i in range(0, 200):
+        us[i, 0] = 1.0
+        us[i, 1] = 0
+    for i in range(200, 400):
+        us[i, 0] = 0.5
+        us[i, 1] = np.pi / 4
+    for i in range(400, 600):
+        us[i, 0] = 1.0
+        us[i, 1] = 0
+    return us
 
 
 if __name__ == "__main__":
     simulator = PythonDDCar()
 
     # Trajectory by velocity and angular velocity
-    us = np.zeros((300, 2))
-    for i in range(0, 100):
-        us[i, 0] = 2.0
-        us[i, 1] = 0
-    for i in range(100, 200):
-        us[i, 0] = 2.0
-        us[i, 1] = np.pi / 2
-    for i in range(200, 300):
-        us[i, 0] = 2.0
-        us[i, 1] = 0
+    us = create_trajectory()
     # Trajectory by position
     Xs = simulate(simulator, us)
     # animation
-    animate(Xs)
+    animate(Xs, us)
