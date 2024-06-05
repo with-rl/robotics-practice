@@ -22,10 +22,7 @@ class PythonPendulum1J:
         self.l = 1
         self.g = 9.81
 
-    def pendulum_trajectory_tracking(self, z0, t, z_ref, Kp, Kd):
-        theta, theta_d = z0
-        theta_ref, theta_d_ref, theta_dd_ref = z_ref
-
+    def get_tau(self, Kp, Kd, theta, theta_d, theta_ref, theta_d_ref, theta_dd_ref):
         M = 1.0 * self.I + 1.0 * self.c**2 * self.m
         C = 0
         G = self.c * self.g * self.m * np.cos(theta)
@@ -35,12 +32,28 @@ class PythonPendulum1J:
             + C
             + G
         )
-        theta_dd = (tau - C - G) / M
-        return [theta_d, theta_dd]
+        tau = np.clip(tau, -10, 10)
+        return M, C, G, tau
+
+    def pendulum_trajectory_tracking(self, z0, t, z_ref, Kp, Kd):
+        theta, theta_d = z0
+        theta_ref, theta_d_ref, theta_dd_ref = z_ref
+
+        M, C, G, tau = self.get_tau(
+            Kp, Kd, theta, theta_d, theta_ref, theta_d_ref, theta_dd_ref
+        )
+
+        A = np.array([[M]])
+        b = -np.array([[C + G - tau]])
+
+        x = np.linalg.solve(A, b)
+        # theta_dd = (tau - C - G) / M
+        return [theta_d, x[0][0]]
 
 
 def simulate(simulator, z0, z_ref, Kp, Kd, ts):
     theta_ref, theta_d_ref, theta_dd_ref = z_ref
+    taus = np.zeros((len(ts)))
     zs = np.zeros((len(ts), 2))
     zs[0] = z0
     for i in range(len(ts) - 1):
@@ -51,12 +64,22 @@ def simulate(simulator, z0, z_ref, Kp, Kd, ts):
             temp_ts,
             args=((theta_ref[i + 1], theta_d_ref[i + 1], theta_dd_ref[i + 1]), Kp, Kd),
         )
+        _, _, _, tau = simulator.get_tau(
+            Kp,
+            Kd,
+            z0[0],
+            z0[1],
+            theta_ref[i + 1],
+            theta_d_ref[i + 1],
+            theta_dd_ref[i + 1],
+        )
         z0 = result[1]
+        taus[i + 1] = tau
         zs[i + 1] = z0
-    return zs
+    return zs, taus
 
 
-def animate(zs):
+def animate(zs, taus):
     for i, z in enumerate(zs):
         x, y = np.cos(z[0]), np.sin(z[0])
         (bar1,) = plt.plot([0, x], [0, y], linewidth=5, color="r")
@@ -75,12 +98,16 @@ def animate(zs):
     # figure control signal
     plt.figure(1)
 
-    plt.subplot(2, 1, 1)
+    plt.subplot(3, 1, 1)
     plt.plot(zs[:, 0], "r", label="theta")
     plt.legend()
 
-    plt.subplot(2, 1, 2)
+    plt.subplot(3, 1, 2)
     plt.plot(zs[:, 1], "r", label="theta_d")
+    plt.legend()
+
+    plt.subplot(3, 1, 3)
+    plt.plot(taus, "r", label="tau")
     plt.legend()
 
     plt.show()
@@ -139,6 +166,6 @@ if __name__ == "__main__":
     Kd = 2 * np.sqrt(Kp)
     z0 = [-np.pi / 2, 0]
     # Trajectory by position
-    zs = simulate(simulator, z0, z_ref, Kp, Kd, ts)
+    zs, taus = simulate(simulator, z0, z_ref, Kp, Kd, ts)
     # animation
-    animate(zs)
+    animate(zs, taus)

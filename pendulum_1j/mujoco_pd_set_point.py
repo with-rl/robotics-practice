@@ -26,7 +26,8 @@ class MuJoCoPendulum1J(MuJoCoBase):
         self.pysim = PythonPendulum1J()
 
         self.z0, self.z_ref = create_trajectory()
-        self.zs = []
+        self.taus = [0]
+        self.zs = [self.z0]
         self.Kp = 25
         self.Kd = 10
 
@@ -49,20 +50,26 @@ class MuJoCoPendulum1J(MuJoCoBase):
         data.ctrl[0] = tau
 
     def trace_cb(self, mj, model, data):
+        self.taus.append(data.ctrl[0])
         self.zs.append([data.qpos[0], data.qvel[0]])
         print(data.qpos[0])
 
     def report_cp(self):
+        taus = np.array(self.taus)
         zs = np.array(self.zs)
 
         plt.figure(1)
 
-        plt.subplot(2, 1, 1)
+        plt.subplot(3, 1, 1)
         plt.plot(zs[:, 0], "r", label="theta")
         plt.legend()
 
-        plt.subplot(2, 1, 2)
+        plt.subplot(3, 1, 2)
         plt.plot(zs[:, 1], "r", label="theta_d")
+        plt.legend()
+
+        plt.subplot(3, 1, 3)
+        plt.plot(taus, "r", label="tau")
         plt.legend()
 
         plt.show()
