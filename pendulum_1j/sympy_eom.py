@@ -10,12 +10,12 @@ import sympy as sy
 
 
 def main():
-    theta1 = sy.symbols("theta1", real=True)
-    q = sy.Matrix([theta1])
-    theta1_d = sy.symbols("theta1_d", real=True)
-    q_d = sy.Matrix([theta1_d])
-    theta1_dd = sy.symbols("theta1_dd", real=True)
-    q_dd = sy.Matrix([theta1_dd])
+    theta = sy.symbols("theta", real=True)
+    q = sy.Matrix([theta])
+    theta_d = sy.symbols("theta_d", real=True)
+    q_d = sy.Matrix([theta_d])
+    theta_dd = sy.symbols("theta_dd", real=True)
+    q_dd = sy.Matrix([theta_dd])
 
     c1 = sy.symbols("c1", real=True)
     l1 = sy.symbols("l1", real=True)
@@ -29,8 +29,8 @@ def main():
     #
     H_01 = sy.Matrix(
         [
-            [sy.cos(theta1), -sy.sin(theta1), 0],
-            [sy.sin(theta1), sy.cos(theta1), 0],
+            [sy.cos(theta), -sy.sin(theta), 0],
+            [sy.sin(theta), sy.cos(theta), 0],
             [0, 0, 1],
         ]
     )
@@ -45,7 +45,7 @@ def main():
     # Lagrangian
     #
     v_G1 = G1_xy.jacobian(q) * q_d
-    T = sy.simplify(0.5 * m1 * v_G1.dot(v_G1) + 0.5 * I1 * theta1_d**2)
+    T = sy.simplify(0.5 * m1 * v_G1.dot(v_G1) + 0.5 * I1 * theta_d**2)
     V = sy.simplify(m1 * g * G1[1])
     L = sy.simplify(T - V)
     print("*" * 20, "Lagrangian", "*" * 20)
@@ -87,20 +87,20 @@ def main():
     #
     print("*" * 20, "M, C, G format", "*" * 20)
     M = EOM.jacobian(q_dd)
-    b = EOM.subs([(theta1_dd, 0)])
-    G = b.subs([(theta1_d, 0)])
+    b = EOM.subs([(theta_dd, 0)])
+    G = b.subs([(theta_d, 0)])
     C = b - G
 
     for i in range(len(M)):
-        print(f"M[{i}]: {M[i]}")
+        print(f"M[{i + 1}]: {M[i]}")
     for i in range(len(C)):
-        print(f"C[{i}]: {C[i]}")
+        print(f"C[{i + 1}]: {C[i]}")
     for i in range(len(G)):
-        print(f"G[{i}]: {G[i]}")
+        print(f"G[{i + 1}]: {G[i]}")
     print()
 
     #
-    # Trajectory
+    # Trajectory Tracking
     #
     t = sy.symbols("t", real=True)
     a10, a11, a12, a13 = sy.symbols("a10 a11 a12 a13", real=True)
@@ -116,11 +116,11 @@ def main():
     f1_dd, f2_dd, f3_dd = sy.diff(f1_d, t), sy.diff(f2_d, t), sy.diff(f3_d, t)
 
     t1, t2, t3, t4 = 0.0, 2.0, 4.0, 6.0
-    theta1, theta2, theta3, theta4 = -pi / 2, 0, pi / 2, 0
+    theta, theta2, theta3, theta4 = -pi / 2, 0, pi / 2, 0
 
     equ = sy.Matrix(
         [
-            f1.subs(t, t1) - theta1,
+            f1.subs(t, t1) - theta,
             f1.subs(t, t2) - theta2,
             f2.subs(t, t2) - theta2,
             f2.subs(t, t3) - theta3,
@@ -154,7 +154,7 @@ def main():
         ]
     )
     x = A.inv() * b
-    print("*" * 20, "Traj optimization", "*" * 20)
+    print("*" * 20, "Trajectory Tracking", "*" * 20)
     print(f"A = {A}")
     print(f"b = {b}")
     print(f"a10 = {x[0]}")
