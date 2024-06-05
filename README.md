@@ -97,9 +97,70 @@ python mujoco_kinematics_game.py
 ![animation](./images/projectile-mujoco_kinematics_game.gif)
 
 ## 4. Pendulum 1 Joint
+```
+cd pendulum_1j
+```
+
+## 4.1. Python No Control
+```
+python python_no_control.py
+```
+![animation](./images/pendulum_1j-python_no_control.gif)
+![report](./images/pendulum_1j-python_no_control.png)
+
+## 4.2. Mujoco No Control
+```
+python mujoco_no_control.py
+```
+![animation](./images/pendulum_1j-mujoco_no_control.gif)
+![report](./images/pendulum_1j-mujoco_no_control.png)
+
+## 4.3. Python PD Set Point Control
+```
+python python_pd_set_point.py
+```
+![animation](./images/pendulum_1j-python_pd_set_point.gif)
+![report](./images/pendulum_1j-python_pd_set_point.png)
+
+## 4.4. Mujoco PD Set Point Control
+```
+python mujoco_pd_set_point.py
+```
+![animation](./images/pendulum_1j-mujoco_pd_set_point.gif)
+![report](./images/pendulum_1j-mujoco_pd_set_point.png)
+
+## 4.5. Python Feedback Linearization Control
+```
+python python_fl_set_point.py
+```
+![animation](./images/pendulum_1j-python_fl_set_point.gif)
+![report](./images/pendulum_1j-python_fl_set_point.png)
+
+## 4.6. Mujoco Feedback Linearization Control
+```
+python mujoco_fl_set_point.py
+```
+![animation](./images/pendulum_1j-mujoco_fl_set_point.gif)
+![report](./images/pendulum_1j-mujoco_fl_set_point.png)
+
+## 4.7. Python Trajectory Tracking
+```
+python python_trajectory_tracking.py
+```
+![animation](./images/pendulum_1j-python_trajectory_tracking.gif)
+![report](./images/pendulum_1j-python_trajectory_tracking.png)
+
+## 4.8. Mujoco Trajectory Tracking
+```
+python mujoco_trajectory_tracking.py
+```
+![animation](./images/pendulum_1j-mujoco_trajectory_tracking.gif)
+![report](./images/pendulum_1j-mujoco_trajectory_tracking.png)
+
 
 ## Reference
 - https://www.youtube.com/watch?v=uxvhqRTdUXE&list=PLc7bpbeTIk77plTksRXAe1JPJZVmBNk8_
+- https://www.youtube.com/watch?v=u6tNfvLXK-I&list=PLc7bpbeTIk75dgBVd07z6_uKN1KQkwFRK
 - https://pab47.github.io/legs.html
 - https://www.youtube.com/playlist?list=PLqVtSQw2sXKlI3idkAUBp2yX_p7wnJQF-
 - https://github.com/kimsooyoung/robotics_python
