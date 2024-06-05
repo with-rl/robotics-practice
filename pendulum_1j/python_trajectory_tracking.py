@@ -70,6 +70,20 @@ def animate(zs):
             bar1.remove()
 
     plt.pause(5)
+    plt.close()
+
+    # figure control signal
+    plt.figure(1)
+
+    plt.subplot(2, 1, 1)
+    plt.plot(zs[:, 0], "r", label="theta")
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    plt.plot(zs[:, 1], "r", label="theta_d")
+    plt.legend()
+
+    plt.show()
 
 
 def create_trajectory():

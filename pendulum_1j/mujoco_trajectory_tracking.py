@@ -8,11 +8,15 @@
 
 import sys
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
 from python_trajectory_tracking import PythonPendulum1J, create_trajectory
 
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
+
+matplotlib.use("Qt5Agg")
 
 
 class MuJoCoPendulum1J(MuJoCoBase):
@@ -28,6 +32,7 @@ class MuJoCoPendulum1J(MuJoCoBase):
         self.g = 9.81
 
         self.z0 = [-np.pi / 2, 0]
+        self.zs = []
         self.ts, self.z_ref = create_trajectory()
         self.Kp = 25
         self.Kd = 2 * np.sqrt(self.Kp)
@@ -69,8 +74,24 @@ class MuJoCoPendulum1J(MuJoCoBase):
         data.ctrl[0] = tau
 
     def trace_cb(self, mj, model, data):
+        self.zs.append([data.qpos[0], data.qvel[0]])
         print(data.qpos[0])
         self.index += 1
+
+    def report_cp(self):
+        zs = np.array(self.zs)
+
+        plt.figure(1)
+
+        plt.subplot(2, 1, 1)
+        plt.plot(zs[:, 0], "r", label="theta")
+        plt.legend()
+
+        plt.subplot(2, 1, 2)
+        plt.plot(zs[:, 1], "r", label="theta_d")
+        plt.legend()
+
+        plt.show()
 
 
 if __name__ == "__main__":

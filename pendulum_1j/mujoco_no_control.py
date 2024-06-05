@@ -8,11 +8,15 @@
 
 import sys
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 
-from python_no_control import PythonPendulum1J
+from python_no_control import PythonPendulum1J, create_trajectory
 
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
+
+matplotlib.use("Qt5Agg")
 
 
 class MuJoCoPendulum1J(MuJoCoBase):
@@ -20,7 +24,8 @@ class MuJoCoPendulum1J(MuJoCoBase):
         super().__init__(xml_fn, title)
 
         self.pysim = PythonPendulum1J()
-        self.z0 = [np.pi / 2 - 0.5, 0]
+        self.z0 = create_trajectory()
+        self.zs = []
 
     def init_cam(self):
         # initialize camera
@@ -33,7 +38,23 @@ class MuJoCoPendulum1J(MuJoCoBase):
         data.qpos[0] = self.z0[0]
 
     def trace_cb(self, mj, model, data):
+        self.zs.append([data.qpos[0], data.qvel[0]])
         print(data.qpos[0])
+
+    def report_cp(self):
+        zs = np.array(self.zs)
+
+        plt.figure(1)
+
+        plt.subplot(2, 1, 1)
+        plt.plot(zs[:, 0], "r", label="theta")
+        plt.legend()
+
+        plt.subplot(2, 1, 2)
+        plt.plot(zs[:, 1], "r", label="theta_d")
+        plt.legend()
+
+        plt.show()
 
 
 if __name__ == "__main__":
