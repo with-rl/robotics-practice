@@ -6,6 +6,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 #     http://www.apache.org/licenses/LICENSE-2.0
 
+import platform
 import sys
 import numpy as np
 import matplotlib
@@ -19,7 +20,8 @@ from python_inverse_kinematics import create_trajectory
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
 
-matplotlib.use("Qt5Agg")
+if platform.system() == "Darwin":
+    matplotlib.use("Qt5Agg")
 
 
 class MuJoCoDDCar(MuJoCoBase):

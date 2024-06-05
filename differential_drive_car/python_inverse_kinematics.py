@@ -6,13 +6,15 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 #     http://www.apache.org/licenses/LICENSE-2.0
 
+import platform
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
 from python_forward_kinematics import PythonDDCar
 
-matplotlib.use("TkAgg")
+if platform.system() == "Darwin":
+    matplotlib.use("TkAgg")
 
 
 def simulate(simulator, X_refs):
