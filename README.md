@@ -72,6 +72,29 @@ python mujoco_inverse_kinematics.py
 ![report](./images/differential_drive_car-mujoco_inverse_kinematics.png)
 
 ## 3. Projectile
+```
+cd projectile
+```
+
+## 3.1. Python Kinematics
+```
+python python_kinematics.py
+```
+![animation](./images/projectile-python_kinematics.gif)
+![report](./images/projectile-python_kinematics.png)
+
+## 3.2. Mujoco Kinematics
+```
+python mujoco_kinematics.py
+```
+![animation](./images/projectile-mujoco_kinematics.gif)
+![report](./images/projectile-mujoco_kinematics.png)
+
+## 3.3. Mujoco Kinematics Game
+```
+python mujoco_kinematics_game.py
+```
+![animation](./images/projectile-mujoco_kinematics_game.gif)
 
 ## 4. Pendulum 1 Joint
 
