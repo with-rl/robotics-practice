@@ -6,12 +6,14 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 #     http://www.apache.org/licenses/LICENSE-2.0
 
+import platform
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib
 import matplotlib.pyplot as plt
 
-matplotlib.use("TkAgg")
+if platform.system() == "Darwin":
+    matplotlib.use("TkAgg")
 
 
 class PythonPendulum1J:

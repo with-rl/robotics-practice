@@ -6,6 +6,7 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 #     http://www.apache.org/licenses/LICENSE-2.0
 
+import platform
 import sys
 import numpy as np
 import matplotlib
@@ -16,7 +17,8 @@ from python_pd_set_point import PythonPendulum1J, create_trajectory
 sys.path.append("../common")
 from mujoco_util import MuJoCoBase
 
-matplotlib.use("Qt5Agg")
+if platform.system() == "Darwin":
+    matplotlib.use("Qt5Agg")
 
 
 class MuJoCoPendulum1J(MuJoCoBase):
