@@ -6,13 +6,15 @@
 # Licensed under the Apache License, Version 2.0 (the "License");
 #     http://www.apache.org/licenses/LICENSE-2.0
 
+import platform
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
-matplotlib.use("TkAgg")
-
 from python_forward_kinematics import PythonManipulator2D
+
+if platform.system() == "Darwin":
+    matplotlib.use("TkAgg")
 
 
 def simulate(simulator, q, X_refs):
@@ -48,7 +50,7 @@ def animate(Xs, X_refs, qs):
         (bar2,) = plt.plot(
             [X[0][0], X[1][0]], [X[0][1], X[1][1]], linewidth=5, color="b"
         )
-        (shape,) = plt.plot(Xs[0:i, 1, 0], Xs[0:i, 1, 1], "k.")
+        (shape,) = plt.plot(Xs[0:i, 1, 0], Xs[0:i, 1, 1], "k.-")
 
         plt.xlim(-2, 2)
         plt.ylim(-2, 2)
