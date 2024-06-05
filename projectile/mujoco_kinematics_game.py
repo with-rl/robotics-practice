@@ -29,7 +29,7 @@ class MuJoCoProjectile(MuJoCoBase):
     def init_cam(self):
         # initialize camera
         self.cam.azimuth = 90
-        self.cam.elevation = -45
+        self.cam.elevation = -10
         self.cam.distance = 20
         self.cam.lookat = np.array([0.0, 0.0, 0.0])
 
