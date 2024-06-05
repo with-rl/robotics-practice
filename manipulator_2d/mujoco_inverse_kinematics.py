@@ -96,7 +96,6 @@ class MuJoCoManipulator2D(MuJoCoBase):
         plt.plot(X_refs[:, 1], "b", label="y_ref")
         plt.legend()
 
-        plt.plot()
         plt.show()
 
 

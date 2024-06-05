@@ -83,7 +83,6 @@ class MuJoCoDDCar(MuJoCoBase):
         plt.plot(ctrls[:, 1], "b", label="right")
         plt.legend()
 
-        plt.plot()
         plt.show()
 
 

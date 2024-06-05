@@ -69,7 +69,6 @@ class MuJoCoManipulator2D(MuJoCoBase):
         plt.plot(Xs[:, 1], "b", label="y_e")
         plt.legend()
 
-        plt.plot()
         plt.show()
 
 

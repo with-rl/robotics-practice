@@ -29,9 +29,8 @@ class PythonProjectile:
         return [x_d, x_dd, y_d, y_dd]
 
 
-def simulate(simulator, x, y, x_d, y_d, N):
+def simulate(simulator, X0, N):
     ts = np.arange(N) * simulator.h
-    X0 = np.array([x, x_d, y, y_d])
     Xs = odeint(simulator.projectile, X0, ts, args=())
     return Xs
 
@@ -51,15 +50,36 @@ def animate(Xs):
             prj.remove()
 
     plt.pause(5)
+    plt.close()
+
+    # figure control signal
+    plt.figure(1)
+
+    plt.subplot(2, 1, 1)
+    plt.plot(Xs[:, 0], "r", label="x")
+    plt.plot(Xs[:, 2], "b", label="y")
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    plt.plot(Xs[:, 1], "r", label="x_d")
+    plt.plot(Xs[:, 3], "b", label="y_d")
+    plt.legend()
+
+    plt.show()
+
+
+def create_trajectory():
+    x, y = 0.1, 0.1
+    x_d, y_d = 100, 100
+    return x, x_d, y, y_d
 
 
 if __name__ == "__main__":
     simulator = PythonProjectile()
 
     # Trajectory by angle
-    x, y = 0, 0
-    x_d, y_d = 100, 100
+    X0 = create_trajectory()
     # Trajectory by position
-    Xs = simulate(simulator, x, y, x_d, y_d, 101)
+    Xs = simulate(simulator, X0, 101)
     # animation
     animate(Xs)
