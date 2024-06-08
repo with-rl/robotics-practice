@@ -87,12 +87,12 @@ def animate(Xs, X_refs, qs):
 
 
 def create_trajectory(simulator):
-    q = np.array([np.pi / 2, np.pi / 2])
+    q = np.array([np.pi * 0.5, np.pi * 1.5])
     r = 0.5
 
-    _, E0 = simulator.forward_kinematics(q[0], q[0])
+    _, E0 = simulator.forward_kinematics(q[0], q[1])
     phi = np.linspace(0, 2 * np.pi, 500)
-    X_refs = np.stack([E0[0] + r * np.cos(phi), E0[1] + r * np.sin(phi)], axis=-1)
+    X_refs = np.stack([E0[0] + r * (np.cos(phi) - 1), E0[1] + r * np.sin(phi)], axis=-1)
     return q, X_refs
 
 
